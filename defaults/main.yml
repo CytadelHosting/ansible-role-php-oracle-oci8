@@ -1,5 +1,5 @@
 ---
-# defaults file for cytadel.oracle-instantclient
+# defaults file for CytadelHosting.php-oracle-oci8
 
 # Oracle installation base directory
 oracle_client_base: /opt/oracle
@@ -10,14 +10,3 @@ instantclient_packages:
     url: https://download.oracle.com/otn_software/linux/instantclient/211000/instantclient-basic-linux.x64-21.1.0.0.0.zip
   - filename: instantclient-sdk-linux.x64-21.1.0.0.0.zip
     url: https://download.oracle.com/otn_software/linux/instantclient/211000/instantclient-sdk-linux.x64-21.1.0.0.0.zip
-
-# set to false if you don't want to install cx_Oracle
-oracle_client_install_cx_oracle: true
-
-# constants
-
-oracle_user:
-  group: oinstall
-  gid:   3421
-  user:  oracle
-  uid:   3321

@@ -1,0 +1,11 @@
+# exclude liniting of all external submodules
+# this responsability belong to their maintainers
+# exclude_paths:
+#  - ./examples/
+
+# those rules are irrelevant or too hard to respect
+skip_list:
+  - '204' # lines should be no longer than 160 chars
+  - '305' # use shell only when shell functionality is required
+  - '403' # package installs should not use latest
+  - '602' # don't compare to empty string https://github.com/ansible/ansible-lint/issues/457

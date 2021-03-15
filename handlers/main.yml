@@ -1,5 +1,5 @@
 ---
-# handlers file for cytadel.oracle-instantclient
+# handlers file for CytadelHosting.php-oracle-oci8
 
 - name: run ldconfig
   command: /sbin/ldconfig

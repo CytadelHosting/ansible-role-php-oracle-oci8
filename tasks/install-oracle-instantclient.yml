@@ -1,5 +1,5 @@
 ---
-# Tasks for install-oracle-instantclient
+# tasks file for CytadelHosting.php-oracle-oci8 # install-oracle-instantclient
 
 
 - name: Create the /opt/oracle directory.
@@ -12,7 +12,6 @@
   get_url:
     url: "{{ item.url }}"
     dest: "/tmp/{{ item.filename }}"
-    #sha256sum: "{{ item.sha256 }}"
   with_items: "{{ instantclient_packages }}"
 
 - name: Unzip oracle instantclient packages
@@ -23,25 +22,15 @@
     creates: "{{ oracle_client_base }}/instantclient_21_1"
   with_items: "{{ instantclient_packages }}"
 
-- name: Check if /opt/oracle/instantclient already exists.
-  stat:
-    path: "{{ oracle_client_base }}/instantclient"
-  register: instantclient_dir
-
-
-- name: Debug 1
-  debug: 
-    var: "{{ instantclient_dir }}"
-
 - name: link instantclient to extracted directory
   file:
-    src: "{{ oracle_client_base }}/instantclient_21_1" 
+    src: "{{ oracle_client_base }}/instantclient_21_1"
     dest: "{{ oracle_client_base }}/instantclient"
     state: "link"
 
 
 - name: Add instantclient to ldconfig
-  copy: 
+  copy:
     content: "{{ oracle_client_base }}/instantclient"
     dest: '/etc/ld.so.conf.d/oracle.conf'
   notify: run ldconfig
