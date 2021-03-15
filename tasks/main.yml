@@ -1,0 +1,53 @@
+---
+# tasks file for cytadel.oracle-instantclient/main
+
+
+# Check tasks.
+- name: Check if Oracle Instant Client librairies are already installed.
+  shell: if grep -q '/opt/oracle/instantclient' /etc/ld.so.conf.d/oracle.conf; then echo "true"; else echo "false"; fi
+  args:
+    executable: /bin/bash
+  register: oracle_instantclient_installed
+  tags:
+    - oracle-instantclient
+
+- name: debug variable
+  debug:
+    msg: "Oracle Instant Client is installed: {{ oracle_instantclient_installed.stdout | bool }}"
+  tags:
+    - oracle-instantclient
+
+- name: Check if the PHP oci8 extension is already enabled.
+  shell: php -m | if grep -q oci8; then echo "true"; else echo "false"; fi
+  args:
+    executable: /bin/bash
+  register: php_oci8_enabled
+  tags:
+    - oracle-instantclient
+
+- name: debug variable
+  debug:
+    msg: "php has OCI8 support enabled: {{ php_oci8_enabled.stdout | bool }}"
+  tags:
+    - oracle-instantclient
+
+#- name: Check if the PHP PDO_OCI extension is already enabled.
+#  shell: php -m | if grep -iq pdo_oci; then echo "true"; else echo "false"; fi
+#  args:
+#    executable: /bin/bash
+#  register: php_pdo_oci_enabled
+
+
+# Main tasks.
+- include: install-oracle-instantclient.yml
+  when: not (oracle_instantclient_installed.stdout | bool)
+  tags:
+    - oracle-instantclient
+
+- include: install-php-oci8.yml
+  when: not (php_oci8_enabled.stdout | bool)
+  tags:
+    - oracle-instantclient
+
+#- include: install-php-pdo-oci.yml
+#  when:  php_pdo_oci_enabled.stdout == 'false'

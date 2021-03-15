@@ -1,0 +1,26 @@
+---
+# tasks for install-php-oci8.yml
+
+- name: Install packages.
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "php{{ php_version }}-dev"
+    - build-essential
+
+- name: Install pecl oci8.
+  shell: "echo \"instantclient,{{ oracle_client_base }}/instantclient\" | pecl install {{ oci8_package_name | default ('oci8-2.2.0') }}"
+  ignore_errors: true       # pecl makes an error if oci8 is already installed
+
+- name: Create the PHP oci8 mod file.
+  lineinfile:
+    dest: /etc/php/{{ php_version }}/mods-available/oci8.ini
+    regexp: 'extension=oci8.so'
+    line: 'extension=oci8.so'
+    state: present
+    create: yes
+
+- name: Enable the PHP oci8 mod.
+  command: phpenmod oci8
+  notify: restart php-fpm

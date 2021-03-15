@@ -1,0 +1,10 @@
+---
+# handlers file for cytadel.oracle-instantclient
+
+- name: run ldconfig
+  command: /sbin/ldconfig
+
+- name: restart php-fpm
+  service:
+    name: "php{{ php_version | default ('7.3') }}-fpm"
+    state: restarted

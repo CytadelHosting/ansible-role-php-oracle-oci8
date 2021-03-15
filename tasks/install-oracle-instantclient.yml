@@ -1,0 +1,100 @@
+---
+# Tasks for install-oracle-instantclient
+
+
+- name: Create the /opt/oracle directory.
+  file:
+    path: "{{ oracle_client_base }}"
+    state: directory
+    mode: 0755
+
+- name: Download oracle instantclient packages
+  get_url:
+    url: "{{ item.url }}"
+    dest: "/tmp/{{ item.filename }}"
+    #sha256sum: "{{ item.sha256 }}"
+  with_items: "{{ instantclient_packages }}"
+
+- name: Unzip oracle instantclient packages
+  unarchive:
+    src: "/tmp/{{ item.filename }}"
+    remote_src: true
+    dest: "{{ oracle_client_base }}"
+    creates: "{{ oracle_client_base }}/instantclient_21_1"
+  with_items: "{{ instantclient_packages }}"
+
+- name: Check if /opt/oracle/instantclient already exists.
+  stat:
+    path: "{{ oracle_client_base }}/instantclient"
+  register: instantclient_dir
+
+
+- name: Debug 1
+  debug: 
+    var: "{{ instantclient_dir }}"
+
+- name: link instantclient to extracted directory
+  file:
+    src: "{{ oracle_client_base }}/instantclient_21_1" 
+    dest: "{{ oracle_client_base }}/instantclient"
+    state: "link"
+
+
+- name: Add instantclient to ldconfig
+  copy: 
+    content: "{{ oracle_client_base }}/instantclient"
+    dest: '/etc/ld.so.conf.d/oracle.conf'
+  notify: run ldconfig
+
+- name: Add LD_LIBRARY_PATH to /etc/environment.
+  lineinfile:
+    dest: '/etc/environment'
+    regexp: '^LD_LIBRARY_PATH'
+    line: "LD_LIBRARY_PATH=\"{{ oracle_client_base }}/instantclient\""
+    state: present
+
+- name: Add ORACLE_HOME to environment
+  lineinfile:
+    dest: '/etc/environment'
+    regexp: '^ORACLE_HOME'
+    line: "ORACLE_HOME={{ oracle_client_base }}"
+    state: present
+
+- name: Add /opt/oracle/instantclient to $PATH.
+  lineinfile:
+    dest: /etc/environment
+    regexp: '^PATH="([^"]*)"$'
+    line: "PATH=\"{{ oracle_client_base }}/instantclient:\\1\""
+    backrefs: yes
+    state: present
+
+
+
+
+# - name: installation files check
+#  shell: ls {{ oracle_client_local_oracle_zip_files_dir }}/instantclient-*.zip
+#  connection: local
+#  sudo: false
+#  register: ls_inst_files
+#  changed_when: false
+#  tags: check
+
+#- name: installation files missing
+#  fail: msg="Oracle Instant Client installation files missing"
+#  when: ls_inst_files.stdout == ""
+#  tags: check
+
+#- name: creating oinstall group
+#  group: state=present name={{ _oracle_client.group }} gid={{ _oracle_client.group_id }}
+#  sudo: true
+
+#- name: creating oracle user
+#  user: state=present name={{ _oracle_client.user }} uid={{ _oracle_client.user_id }} group={{ _oracle_client.group  }}
+#  sudo: true
+
+#- name: creating base directory
+#  sudo: true
+#  file: path={{ oracle_client_base }} state=directory owner={{ _oracle_client.user }} group={{ _oracle_client.group }}
+#  tags: install
+
+
