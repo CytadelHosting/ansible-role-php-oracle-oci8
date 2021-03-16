@@ -25,7 +25,7 @@
 
 - name: Install pecl oci8.
   shell: "echo \"instantclient,{{ oracle_client_base }}/instantclient\" | pecl install {{ oci8_package_name | default ('oci8-2.2.0') }}"
-  #ignore_errors: true       # pecl makes an error if oci8 is already installed
+  # ignore_errors: true       # pecl makes an error if oci8 is already installed, but we shouldn't get there anyway, because it has been checked in main.yml
 
 - name: Create the PHP oci8 mod file.
   lineinfile:
