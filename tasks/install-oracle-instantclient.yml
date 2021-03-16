@@ -1,12 +1,26 @@
 ---
 # tasks file for CytadelHosting.php-oracle-oci8 # install-oracle-instantclient
 
+#- name: create oinstall group
+#  group:
+#    name: "{{ _oracle_client.group }}
+#    gid: "{{ _oracle_client.group_id }}"
+#    state: present
+
+#- name: create oracle user
+#  user:
+#    name: "{{ _oracle_client.user }}"
+#    uid: "{{ _oracle_client.user_id }}"
+#    group: "{{ _oracle_client.group  }}"
+#    state: present
 
 - name: Create the /opt/oracle directory.
   file:
     path: "{{ oracle_client_base }}"
     state: directory
     mode: 0755
+    #owner: "{{ _oracle_client.user }}"
+    #group: "{{ _oracle_client.group }}"
 
 - name: Download oracle instantclient packages
   get_url:
@@ -19,7 +33,6 @@
     src: "/tmp/{{ item.filename }}"
     remote_src: true
     dest: "{{ oracle_client_base }}"
-    creates: "{{ oracle_client_base }}/instantclient_21_1"
   with_items: "{{ instantclient_packages }}"
 
 - name: link instantclient to extracted directory
@@ -56,34 +69,3 @@
     line: "PATH=\"{{ oracle_client_base }}/instantclient:\\1\""
     backrefs: yes
     state: present
-
-
-
-
-# - name: installation files check
-#  shell: ls {{ oracle_client_local_oracle_zip_files_dir }}/instantclient-*.zip
-#  connection: local
-#  sudo: false
-#  register: ls_inst_files
-#  changed_when: false
-#  tags: check
-
-#- name: installation files missing
-#  fail: msg="Oracle Instant Client installation files missing"
-#  when: ls_inst_files.stdout == ""
-#  tags: check
-
-#- name: creating oinstall group
-#  group: state=present name={{ _oracle_client.group }} gid={{ _oracle_client.group_id }}
-#  sudo: true
-
-#- name: creating oracle user
-#  user: state=present name={{ _oracle_client.user }} uid={{ _oracle_client.user_id }} group={{ _oracle_client.group  }}
-#  sudo: true
-
-#- name: creating base directory
-#  sudo: true
-#  file: path={{ oracle_client_base }} state=directory owner={{ _oracle_client.user }} group={{ _oracle_client.group }}
-#  tags: install
-
-
