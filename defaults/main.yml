@@ -1,6 +1,9 @@
 ---
 # defaults file for CytadelHosting.php-oracle-oci8
 
+# Bypass the check Oracle Instant Client is already installed to force resinstallation
+oracle_instantclient_force_reinstall: false
+
 # Oracle installation base directory
 oracle_client_base: /opt/oracle
 

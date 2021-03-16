@@ -43,10 +43,14 @@
 
 # Main tasks.
 - include: install-oracle-instantclient.yml
-  when: not (oracle_instantclient_installed.stdout | bool)
+  when: not (oracle_instantclient_installed.stdout | bool) or oracle_instantclient_force_reinstall
   tags:
     - oracle-instantclient
     - php
+
+# Flush handlers declared in install-oracle-instantclient.yml, as we may need ldconfig reload before building oci8 php driver
+- name: flush handlers
+  meta: flush_handlers
 
 - include: install-php-oci8.yml
   when: not (php_oci8_enabled.stdout | bool)
