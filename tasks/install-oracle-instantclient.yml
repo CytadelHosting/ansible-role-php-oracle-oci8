@@ -1,6 +1,7 @@
 ---
 # tasks file for CytadelHosting.php-oracle-oci8 # install-oracle-instantclient
 
+
 #- name: create oinstall group
 #  group:
 #    name: "{{ _oracle_client.group }}
@@ -26,18 +27,26 @@
   get_url:
     url: "{{ item.url }}"
     dest: "/tmp/{{ item.filename }}"
-  with_items: "{{ instantclient_packages }}"
+  with_items: "{{ oic_item.instantclient_packages }}"
+  when: oracle_download_packages
+
+- name: Upload oracle instantclient packages embedded in the role
+  copy:
+    src: "OIC/{{ oic_item.version }}/{{ item.filename }}"
+    dest: "/tmp/{{ item.filename }}"
+  with_items: "{{ oic_item.instantclient_packages }}"
+  when: not oracle_download_packages
 
 - name: Unzip oracle instantclient packages
   unarchive:
     src: "/tmp/{{ item.filename }}"
     remote_src: true
     dest: "{{ oracle_client_base }}"
-  with_items: "{{ instantclient_packages }}"
+  with_items: "{{ oic_item.instantclient_packages }}"
 
 - name: link instantclient to extracted directory
   file:
-    src: "{{ oracle_client_base }}/instantclient_21_1"
+    src: "{{ oracle_client_base }}/instantclient_{{ instantclient_version }}"
     dest: "{{ oracle_client_base }}/instantclient"
     state: "link"
 

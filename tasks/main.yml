@@ -34,16 +34,27 @@
     - oracle-instantclient
     - php
 
-#- name: Check if the PHP PDO_OCI extension is already enabled.
-#  shell: php -m | if grep -iq pdo_oci; then echo "true"; else echo "false"; fi
-#  args:
-#    executable: /bin/bash
-#  register: php_pdo_oci_enabled
+- name: Check if the PHP PDO_OCI extension is already enabled.
+  shell: php -m | if grep -iq pdo_oci; then echo "true"; else echo "false"; fi
+  args:
+    executable: /bin/bash
+  register: php_pdo_oci_enabled
 
 
-# Main tasks.
-- include: install-oracle-instantclient.yml
-  when: not (oracle_instantclient_installed.stdout | bool) or oracle_instantclient_force_reinstall
+- name: debug version cible de OIC
+  debug:
+    var: instantclient_version
+  tags:
+    - oracle-instantclient
+    - php
+
+- include_tasks: install-oracle-instantclient.yml
+  with_items: "{{ instantclient_sources }}"
+  when:
+    - not (oracle_instantclient_installed.stdout | bool) or oracle_instantclient_force_reinstall
+    - oic_item.version == instantclient_version
+  loop_control:
+    loop_var: oic_item
   tags:
     - oracle-instantclient
     - php
@@ -52,11 +63,13 @@
 - name: flush handlers
   meta: flush_handlers
 
+
 - include: install-php-oci8.yml
-  when: not (php_oci8_enabled.stdout | bool)
+  when: not (php_oci8_enabled.stdout | bool) or oci8_force_reinstall
   tags:
     - oracle-instantclient
     - php
 
+# pdo_oci is deprecated
 #- include: install-php-pdo-oci.yml
 #  when:  php_pdo_oci_enabled.stdout == 'false'

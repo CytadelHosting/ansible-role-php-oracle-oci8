@@ -23,9 +23,19 @@
 - name: change PECL temp dir
   command: pear config-set temp_dir /tmp-pecl
 
+
+# if we're here, that's because either oci8 is not installed yet, or we want to force reinstall (in case of OIC version change for instance)
+- name: Force pecl uninstall oci8.
+  shell: "pecl uninstall {{ oci8_package_name | default ('oci8-2.2.0') }}"
+  ignore_errors: true
+  when: oci8_force_reinstall
+
+# pecl makes an error if oci8 is already installed, but this shouldn't happen as
+# - either OCI8 absence has been checked in main.yml
+# - or it just got uninstalled above
 - name: Install pecl oci8.
   shell: "echo \"instantclient,{{ oracle_client_base }}/instantclient\" | pecl install {{ oci8_package_name | default ('oci8-2.2.0') }}"
-  # ignore_errors: true       # pecl makes an error if oci8 is already installed, but we shouldn't get there anyway, because it has been checked in main.yml
+  # ignore_errors: true
 
 - name: Create the PHP oci8 mod file.
   lineinfile:

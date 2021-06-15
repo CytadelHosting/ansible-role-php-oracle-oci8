@@ -4,12 +4,52 @@
 # Bypass the check Oracle Instant Client is already installed to force resinstallation
 oracle_instantclient_force_reinstall: false
 
+# Bypass the check OCI8 PHP driver is already installed to force resinstallation (in case of OIC version change for instance)
+oci8_force_reinstall: false
+
+# Download packages on Oracle website rather than use sources embedded in the role
+oracle_download_packages: false
+
 # Oracle installation base directory
 oracle_client_base: /opt/oracle
 
-# location of the instant client zip files on the local machine
-instantclient_packages:
-  - filename: instantclient-basic-linux.x64-21.1.0.0.0.zip
-    url: https://download.oracle.com/otn_software/linux/instantclient/211000/instantclient-basic-linux.x64-21.1.0.0.0.zip
-  - filename: instantclient-sdk-linux.x64-21.1.0.0.0.zip
-    url: https://download.oracle.com/otn_software/linux/instantclient/211000/instantclient-sdk-linux.x64-21.1.0.0.0.zip
+instantclient_version: '21_1'
+
+
+instantclient_sources:
+  - version: '10_2'
+    instantclient_packages:
+      - filename: 'basic-10.2.0.5.0-linux-x64.zip'
+        url: ''
+      - filename: 'sdk-10.2.0.5.0-linux-x64.zip'
+        url: ''
+  - version: '12_1'
+    instantclient_packages:
+      - filename: 'instantclient-basic-linux.x64-12.1.0.2.0.zip'
+        url: ''
+      - filename: 'instantclient-sdk-linux.x64-12.1.0.2.0.zip'
+        url: ''
+  - version: '12_2'
+    instantclient_packages:
+      - filename: 'instantclient-basic-linux.x64-12.2.0.1.0.zip'
+        url: 'https://download.oracle.com/otn/linux/instantclient/122010/instantclient-basic-linux.x64-12.2.0.1.0.zip'
+      - filename: 'instantclient-sdk-linux.x64-12.2.0.1.0.zip'
+        url: 'https://download.oracle.com/otn/linux/instantclient/122010/instantclient-sdk-linux.x64-12.2.0.1.0.zip'
+  - version: '18_5'
+    instantclient_packages:
+      - filename: 'instantclient-basic-linux.x64-18.5.0.0.0dbru.zip'
+        url: ''
+      - filename: 'instantclient-sdk-linux.x64-18.5.0.0.0dbru.zip'
+        url: ''
+  - version: '19_11'
+    instantclient_packages:
+      - filename: 'instantclient-basic-linux.x64-19.11.0.0.0dbru.zip'
+        url: ''
+      - filename: 'instantclient-sdk-linux.x64-19.11.0.0.0dbru.zip'
+        url: ''
+  - version: '21_1'
+    instantclient_packages:
+      - filename: 'instantclient-basic-linux.x64-21.1.0.0.0.zip'
+        url: 'https://download.oracle.com/otn_software/linux/instantclient/211000/instantclient-basic-linux.x64-21.1.0.0.0.zip'
+      - filename: 'instantclient-sdk-linux.x64-21.1.0.0.0.zip'
+        url: 'https://download.oracle.com/otn_software/linux/instantclient/211000/instantclient-sdk-linux.x64-21.1.0.0.0.zip'
