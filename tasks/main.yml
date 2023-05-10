@@ -7,6 +7,7 @@
   args:
     executable: /bin/bash
   check_mode: false
+  changed_when: false
   register: oracle_instantclient_installed
   tags:
     - oracle-instantclient
@@ -15,7 +16,6 @@
 - name: debug variable
   debug:
     msg: "Oracle Instant Client is installed: {{ oracle_instantclient_installed.stdout | bool }}"
-  #check_mode: false
   tags:
     - oracle-instantclient
     - php
@@ -25,6 +25,7 @@
   args:
     executable: /bin/bash
   check_mode: false
+  changed_when: false
   register: php_oci8_enabled
   tags:
     - oracle-instantclient
@@ -33,7 +34,6 @@
 - name: debug variable
   debug:
     msg: "php has OCI8 support enabled: {{ php_oci8_enabled.stdout | bool }}"
-  #check_mode: false
   tags:
     - oracle-instantclient
     - php
@@ -43,6 +43,7 @@
   args:
     executable: /bin/bash
   check_mode: false
+  changed_when: false
   register: php_pdo_oci_enabled
 
 
