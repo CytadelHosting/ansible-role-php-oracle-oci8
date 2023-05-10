@@ -6,6 +6,7 @@
   shell: if grep -q '/opt/oracle/instantclient' /etc/ld.so.conf.d/oracle.conf; then echo "true"; else echo "false"; fi
   args:
     executable: /bin/bash
+  check_mode: false
   register: oracle_instantclient_installed
   tags:
     - oracle-instantclient
@@ -14,6 +15,7 @@
 - name: debug variable
   debug:
     msg: "Oracle Instant Client is installed: {{ oracle_instantclient_installed.stdout | bool }}"
+  #check_mode: false
   tags:
     - oracle-instantclient
     - php
@@ -22,6 +24,7 @@
   shell: php -m | if grep -q oci8; then echo "true"; else echo "false"; fi
   args:
     executable: /bin/bash
+  check_mode: false
   register: php_oci8_enabled
   tags:
     - oracle-instantclient
@@ -30,6 +33,7 @@
 - name: debug variable
   debug:
     msg: "php has OCI8 support enabled: {{ php_oci8_enabled.stdout | bool }}"
+  #check_mode: false
   tags:
     - oracle-instantclient
     - php
@@ -38,6 +42,7 @@
   shell: php -m | if grep -iq pdo_oci; then echo "true"; else echo "false"; fi
   args:
     executable: /bin/bash
+  check_mode: false
   register: php_pdo_oci_enabled
 
 

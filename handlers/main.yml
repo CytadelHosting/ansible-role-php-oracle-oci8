@@ -4,7 +4,8 @@
 - name: run ldconfig
   command: /sbin/ldconfig
 
+# shouldn't we use php_default_version instead of php_version here ?
 - name: restart php-fpm
   service:
-    name: "php{{ php_version | default ('7.3') }}-fpm"
+    name: "php{{ php_version | default ('7.4') }}-fpm"
     state: restarted
